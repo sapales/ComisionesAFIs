@@ -22,7 +22,7 @@ public class FacturasComisionesAgentesPie extends PdfPageEventHelper {
     @Override
     public void onEndPage(PdfWriter writer, Document document) {
         //Rectangle rect = writer.getBoxSize("art");
-        ColumnText.showTextAligned(writer.getDirectContent(), Element.ALIGN_LEFT, new Phrase("FFF"), 100 , 130,0);
+        ColumnText.showTextAligned(writer.getDirectContent(), Element.ALIGN_LEFT, new Phrase("FacturasAgentes"), 100 , 130,0);
     }
     
 }

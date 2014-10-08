@@ -24,7 +24,7 @@ import java.sql.Statement;
  */
 public class CargaFicheroAgentes {
         
-        static final int LONG_REG_AGENTES=200;
+        static final int LONG_REG_AGENTES=280;
     
         ParametrosBean pb;
         Connection conexion;
@@ -34,15 +34,15 @@ public class CargaFicheroAgentes {
             this.pb=pb;
             this.conexion=conexion;
             
-            // TODO. Imlementar la actualización de datos
-//            File fichero = new File(pb.getFicheroAgentes());
-//            if(!fichero.exists())
-//                return true;
-//            
-//            if(!cargarFichero())
-//                return false;
-//            
-//            backupBBDD();
+            // TODO. Implementar la actualización de datos
+            File fichero = new File(pb.getFicheroAgentes());
+            if(!fichero.exists())
+                return true;
+            
+            if(!cargarFichero())
+                return false;
+            
+            backupBBDD();
             
             return true;
             

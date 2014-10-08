@@ -5,17 +5,14 @@
  */
 package comisionesafis;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.Statement;
 import java.util.Properties;
-import java.util.Set;
 
 import comisionesafis.informes.FacturasComisionesAgentes;
+import java.util.Calendar;
 import utiles.ConexionSQLite;
 import utiles.Fechas;
 import utiles.Ficheros;
@@ -60,7 +57,10 @@ public class ComisionesAFIs {
         // Cargamos el fichero de comisiones
         if(!comisionesAFIs.cargaFicheroComisiones())
             System.exit(1);            
-            
+        
+        if(!comisionesAFIs.cargaTablaResumenComisiones())
+            System.exit(1);
+        
         // Generamos el informe de Facturas Comisiones Agentes
         if(!comisionesAFIs.generaInformes())
             System.exit(1);            
@@ -222,6 +222,16 @@ public class ComisionesAFIs {
         
     }
 
+    private boolean cargaTablaResumenComisiones(){
+        
+        CargaTablaResumenComisiones ctrc = new CargaTablaResumenComisiones();
+        if(!ctrc.cargar(conexion, pb))
+            return false;
+        else
+            return true;
+
+    }
+    
     private boolean cargaFicheroAgentes(){
         
         CargaFicheroAgentes cfa = new CargaFicheroAgentes();
@@ -241,29 +251,12 @@ public class ComisionesAFIs {
             return true;
 
     }
-        
-    private boolean backup(String fichero){
-        
-        String nuevoFich;
-        File origen = new File(fichero);
-        
-//        try{
-//            nuevoFich=pb.getDirBackup() + fichero + "-"  + Fechas.fechaFichero();
-//            File destino = new File(nuevoFich);
-//            origen.renameTo(destino);
-//            return true;
-//        }catch(Exception e){
-//            return false;
-//        }
-
-        return true;
-    }
-    
+            
     private boolean generaInformes(){
 
         FacturasComisionesAgentes facturasComisionesAgentes;
         
-        facturasComisionesAgentes = new FacturasComisionesAgentes(conexion, pb.getDirectorioSalida());
+        facturasComisionesAgentes = new FacturasComisionesAgentes(conexion, pb);
         if(!facturasComisionesAgentes.generar()){
             return false;
         }
