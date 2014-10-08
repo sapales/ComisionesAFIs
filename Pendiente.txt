@@ -1,0 +1,23 @@
+Revisar
+=======
+
+- Campos de las tablas
+- Longitudes de registros
+- Probar con registros buenos
+
+Fichero de Entrada de Comisiones/Recibos
+=========================================
+- ¿Sirve para algo la cabecera del registro?
+- Campo Importe Comisión. Longitud 12. ¿Decimales?
+- ¿Puede haber más de un recibo para un agente en el mismo fichero? Entiendo que sí, ¿no?
+- Qué pasa si viene un recibo asignado a un agente que no está en el fichero de Agentes? No debería ocurrir pero...
+
+Fichero de Entrada de Agentes
+=========================================
+- Retención (numérico 2). ¿No tiene decimales?
+
+
+Factura Comisiones Agentes
+==========================
+- ¿Una hoja por agente o por recibo?
+
