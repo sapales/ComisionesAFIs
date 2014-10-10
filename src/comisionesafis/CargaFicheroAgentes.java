@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.Statement;
+import utiles.Fechas;
 
 /**
  *
@@ -24,7 +25,7 @@ import java.sql.Statement;
  */
 public class CargaFicheroAgentes {
         
-        static final int LONG_REG_AGENTES=280;
+        static final int LONG_REG_AGENTES=550;
     
         ParametrosBean pb;
         Connection conexion;
@@ -58,6 +59,7 @@ public class CargaFicheroAgentes {
             int retencion;
             String sSQL="";
             Statement stmt;
+            boolean retorno=false;
 
             try {
                 // Apertura del fichero y creacion de BufferedReader para poder
@@ -75,8 +77,10 @@ public class CargaFicheroAgentes {
                     }
                     // Recuperamos los datos
                     dato=linea.split(";");
-                    for(int i=0; i<11; i++)
+                    for(int i=0; i<11; i++){
                         dato[i]=dato[i].trim();
+                        dato[i]=dato[i].replace("'", "''");
+                    }
                     // Tratamos los datos antes de insertarlos en la BBDD
                     dato[0]=dato[0].substring(5,10);    // Código de Agente
                     retencion=Integer.parseInt(dato[6]);
@@ -98,10 +102,12 @@ public class CargaFicheroAgentes {
                     stmt.executeUpdate(sSQL);
                     stmt.close();
                 }
+                retorno=true;
             }
             catch(Exception e){
                 System.out.println(e.getMessage());
                 e.printStackTrace();
+                retorno=false;
             }finally{
                // En el finally cerramos el fichero, para asegurarnos
                // que se cierra tanto si todo va bien como si salta
@@ -114,7 +120,7 @@ public class CargaFicheroAgentes {
                   e2.printStackTrace();
                }
             }
-            return true;
+            return retorno;
     }
     
     private boolean backupBBDD(){
@@ -122,15 +128,13 @@ public class CargaFicheroAgentes {
         String nuevoFich;
         File origen = new File(pb.getFicheroAgentes());
         
-//        try{
-//            nuevoFich=pb.getDirBackup() + fichero + "-"  + Fechas.fechaFichero();
-//            File destino = new File(nuevoFich);
-//            origen.renameTo(destino);
-//            return true;
-//        }catch(Exception e){
-//            return false;
-//        }
-
-        return true;
+        try{
+            nuevoFich=pb.getDirBackup() + pb.getFicheroAgentes() + "-"  + Fechas.fechaFichero();
+            File destino = new File(nuevoFich);
+            origen.renameTo(destino);
+            return true;
+        }catch(Exception e){
+            return false;
+        }
     }
 }

@@ -8,6 +8,7 @@ package comisionesafis;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import utiles.Numeros;
 import utiles.Periodos;
 
 /**
@@ -40,6 +41,8 @@ public class CargaTablaResumenComisiones {
         ResultSet rsRecibos;
         ResultSet rsAgentes;
         String periodo;
+        String nombre;
+        String direccion;
         double retencionPorcentaje;
         double retencion;
         double totalPagar;
@@ -65,32 +68,35 @@ public class CargaTablaResumenComisiones {
                 stmt = conexion.createStatement();
                 rsAgentes = stmt.executeQuery(sSQL);
                 if(!rsAgentes.next()){
-                    return false;
+                    System.out.println("No hay datos del agente" + rsRecibos.getString("CodAgente"));
+                }else{
+                    // Cálculos previos
+                    periodo = periodos.extraePeriodoMY("MMYYYY");
+                    retencionPorcentaje=rsAgentes.getDouble("RetencionPorcentaje");
+                    retencion  = Double.parseDouble(rsRecibos.getString("SumaComision")) * (retencionPorcentaje/100);
+                    totalPagar = Double.parseDouble(rsRecibos.getString("SumaComision")) - retencion;
+                    nombre = rsAgentes.getString("Nombre").replace("'","''");
+                    direccion =rsAgentes.getString("Direccion").replace("'","''");
+
+                    sSQL =  "INSERT INTO ResumenComisiones VALUES(";
+                    sSQL += "null,'";
+                    sSQL += rsRecibos.getString("CodAgente") + "','";
+                    sSQL += nombre + "','";
+                    sSQL += direccion + "','";
+                    sSQL += rsAgentes.getString("CodPostal") + "','";
+                    sSQL += rsAgentes.getString("Poblacion") + "','";
+                    sSQL += rsAgentes.getString("Provincia") + "','";
+                    sSQL += "" + "','";   // Hueco para el NIF
+                    sSQL += periodo + "',";
+                    sSQL += retencionPorcentaje + ",";
+                    sSQL += rsRecibos.getDouble("SumaComision") + ",";
+                    sSQL += retencion + ",";
+                    sSQL += totalPagar + ")";
+                    System.out.println(sSQL);
+                    stmt = conexion.createStatement();
+                    stmt.executeUpdate(sSQL);
+                    stmt.close();
                 }
-                
-                // Cálculos previos
-                periodo = periodos.extraePeriodoMY("MMYYYY");
-                retencionPorcentaje=rsAgentes.getDouble("RetencionPorcentaje");
-                retencion  = Double.parseDouble(rsRecibos.getString("SumaComision")) * (retencionPorcentaje/100);
-                totalPagar = Double.parseDouble(rsRecibos.getString("SumaComision")) - retencion;
-                
-                sSQL =  "INSERT INTO ResumenComisiones VALUES(";
-                sSQL += "null,'";
-                sSQL += rsRecibos.getString("CodAgente") + "','";
-                sSQL += rsAgentes.getString("Nombre") + "','";
-                sSQL += rsAgentes.getString("Direccion") + "','";
-                sSQL += rsAgentes.getString("CodPostal") + "','";
-                sSQL += rsAgentes.getString("Poblacion") + "','";
-                sSQL += rsAgentes.getString("Provincia") + "','";
-                sSQL += "" + "','";   // Hueco para el NIF
-                sSQL += periodo + "',";
-                sSQL += retencionPorcentaje + ",";
-                sSQL += rsRecibos.getDouble("SumaComision") + ",";
-                sSQL += retencion + ",";
-                sSQL += totalPagar + ")";
-                stmt = conexion.createStatement();
-                stmt.executeUpdate(sSQL);
-                stmt.close();
             }
             return true;
         }        

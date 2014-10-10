@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.Statement;
+import utiles.Numeros;
 
 /**
  *
@@ -18,7 +19,7 @@ import java.sql.Statement;
  */
 public class CargaFicheroComisiones {
 
-    static final int LONG_REG_COMISIONES=2000;
+    static final int LONG_REG_COMISIONES=829;
     
     ParametrosBean pb;
     Connection conexion;
@@ -53,6 +54,7 @@ public class CargaFicheroComisiones {
         double importe;
         String sSQL="";
         Statement stmt;
+        boolean retorno = false;
 
         try {
             
@@ -69,14 +71,14 @@ public class CargaFicheroComisiones {
             // Lectura del fichero
             String linea;
             while((linea=br.readLine())!=null){
-                if(linea.length()!=LONG_REG_COMISIONES){
-                    //TODO. Log
-                    return false;
-                }
                 if(cabecera)
                     // La cabecera no la tratamos
                     cabecera=false;
                 else{
+                    if(linea.length()!=LONG_REG_COMISIONES){
+                        //TODO. Log
+                        return false;
+                    }
                     // Recuperamos los datos
                     dato[0]=linea.substring(0,20);      // Número de Póliza
                     dato[1]=linea.substring(20,40);     // Número de Recibo
@@ -92,10 +94,10 @@ public class CargaFicheroComisiones {
                     dato[0]=dato[0].trim();
                     dato[1]=dato[1].trim();
                     dato[2]=dato[2].substring(3,8);
-                    impComision=Double.parseDouble(dato[4]);
+                    impComision=Double.parseDouble(Numeros.eliminaCerosPorIzquierda(dato[4]));
                     //dato[5]=dato[5];
                     //dato[6]=dato[6];
-                    importe=Double.parseDouble(dato[7])/100;
+                    importe=Double.parseDouble(Numeros.eliminaCerosPorIzquierda(dato[7]))/100;
                     //dato[8]=dato[8];
                     sSQL =  "INSERT INTO Recibos VALUES('";
                     sSQL += dato[0] + "','";
@@ -112,10 +114,12 @@ public class CargaFicheroComisiones {
                     stmt.close();
                 }
             }
+            retorno = true;
         }
         catch(Exception e){
             System.out.println(e.getMessage());
             e.printStackTrace();
+            retorno = false;
         }finally{
            // En el finally cerramos el fichero, para asegurarnos
            // que se cierra tanto si todo va bien como si salta
@@ -128,7 +132,7 @@ public class CargaFicheroComisiones {
               e2.printStackTrace();
            }
         }
-        return true;
+        return retorno;
     }
 
     private boolean backupBBDD(){
