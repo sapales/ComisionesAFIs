@@ -16,8 +16,8 @@ import com.itextpdf.text.pdf.PdfWriter;
  *
  * @author Santiago
  */
-public class FacturasComisionesAgentesPie extends PdfPageEventHelper {
-    
+public class CintaComisionesPie extends PdfPageEventHelper{
+        
     @Override
     public void onEndPage(PdfWriter writer, Document document) {
         //Rectangle rect = writer.getBoxSize("art");

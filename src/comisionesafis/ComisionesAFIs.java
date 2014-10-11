@@ -43,30 +43,37 @@ public class ComisionesAFIs {
         ComisionesAFIs comisionesAFIs=new ComisionesAFIs();
         
         // Inicializamos las variables que contienen los ficheros y directorios de trabajo
+        System.out.println("Inicializando...");
         if(!comisionesAFIs.init(args))
           System.exit(1);    
         
+        System.out.println("Conectando con BBDD...");
         // Abrimos la base de datos (conexión)
         if(!comisionesAFIs.conectarBBDD())
             System.exit(1);            
         
         // Pendiente de rediseño
         // Cargamos el fichero de agentes
+        System.out.println("Cargando Fichero de Agentes...");
         if(!comisionesAFIs.cargaFicheroAgentes())
             System.exit(1);           
         
         // Cargamos el fichero de comisiones
+        System.out.println("Cargando Fichero de Comisiones...");
         if(!comisionesAFIs.cargaFicheroComisiones())
             System.exit(1);            
         
+        System.out.println("Cargando Tabla de Resumen de Comisiones...");
         if(!comisionesAFIs.cargaTablaResumenComisiones())
             System.exit(1);
         
         // Generamos el informe de Facturas Comisiones Agentes
+        System.out.println("Generando Informes...");
         if(!comisionesAFIs.generaInformes())
             System.exit(1);            
         
         // Hacemos backup de la base de datos AFIs.sqlite a AFIsYYYYMMDD.sqlite
+        System.out.println("Haciendo Backup de la BBDD...");
         if(!comisionesAFIs.backupBD())
             System.exit(1);
 

@@ -71,10 +71,10 @@ public class CargaFicheroComisiones {
             // Lectura del fichero
             String linea;
             while((linea=br.readLine())!=null){
-                if(cabecera)
+                if(cabecera){
                     // La cabecera no la tratamos
                     cabecera=false;
-                else{
+                } else {
                     if(linea.length()!=LONG_REG_COMISIONES){
                         //TODO. Log
                         return false;
