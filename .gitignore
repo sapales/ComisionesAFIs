@@ -13,6 +13,7 @@
 
     ## datos
     AVI*.txt
+    Comisiones*.TXT
     *.pdf
     *.sqlite
 /Datos/
