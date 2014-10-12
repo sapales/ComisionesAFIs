@@ -5,6 +5,7 @@
  */
 package comisionesafis;
 
+import comisionesafis.informes.CintaComisiones;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -12,11 +13,9 @@ import java.sql.Connection;
 import java.util.Properties;
 
 import comisionesafis.informes.FacturasComisionesAgentes;
-import java.util.Calendar;
 import utiles.ConexionSQLite;
 import utiles.Fechas;
 import utiles.Ficheros;
-import utiles.Numeros;
 
 
 /**
@@ -54,18 +53,18 @@ public class ComisionesAFIs {
         
         // Pendiente de rediseño
         // Cargamos el fichero de agentes
-        System.out.println("Cargando Fichero de Agentes...");
-        if(!comisionesAFIs.cargaFicheroAgentes())
-            System.exit(1);           
-        
-        // Cargamos el fichero de comisiones
-        System.out.println("Cargando Fichero de Comisiones...");
-        if(!comisionesAFIs.cargaFicheroComisiones())
-            System.exit(1);            
-        
-        System.out.println("Cargando Tabla de Resumen de Comisiones...");
-        if(!comisionesAFIs.cargaTablaResumenComisiones())
-            System.exit(1);
+//        System.out.println("Cargando Fichero de Agentes...");
+//        if(!comisionesAFIs.cargaFicheroAgentes())
+//            System.exit(1);           
+//        
+//        // Cargamos el fichero de comisiones
+//        System.out.println("Cargando Fichero de Comisiones...");
+//        if(!comisionesAFIs.cargaFicheroComisiones())
+//            System.exit(1);            
+//        
+//        System.out.println("Cargando Tabla de Resumen de Comisiones...");
+//        if(!comisionesAFIs.cargaTablaResumenComisiones())
+//            System.exit(1);
         
         // Generamos el informe de Facturas Comisiones Agentes
         System.out.println("Generando Informes...");
@@ -268,7 +267,14 @@ public class ComisionesAFIs {
         if(!facturasComisionesAgentes.generar()){
             return false;
         }
+
+        CintaComisiones cintaComisiones;
         
+        cintaComisiones = new CintaComisiones(conexion, pb);
+        if(!cintaComisiones.generar()){
+            return false;
+        }
+
         return true;
     }
     
