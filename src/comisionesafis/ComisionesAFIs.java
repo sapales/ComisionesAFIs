@@ -6,6 +6,7 @@
 package comisionesafis;
 
 import comisionesafis.informes.CintaComisiones;
+import comisionesafis.informes.ComisionesFondo;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -13,6 +14,7 @@ import java.sql.Connection;
 import java.util.Properties;
 
 import comisionesafis.informes.FacturasComisionesAgentes;
+import comisionesafis.informes.LiquidacionComisiones;
 import utiles.ConexionSQLite;
 import utiles.Fechas;
 import utiles.Ficheros;
@@ -262,19 +264,30 @@ public class ComisionesAFIs {
     private boolean generaInformes(){
 
         FacturasComisionesAgentes facturasComisionesAgentes;
-        
         facturasComisionesAgentes = new FacturasComisionesAgentes(conexion, pb);
         if(!facturasComisionesAgentes.generar()){
             return false;
         }
 
         CintaComisiones cintaComisiones;
-        
         cintaComisiones = new CintaComisiones(conexion, pb);
         if(!cintaComisiones.generar()){
             return false;
         }
 
+        LiquidacionComisiones liquidacionComisiones;
+        liquidacionComisiones = new LiquidacionComisiones(conexion, pb);
+        if(!liquidacionComisiones.generar()){
+            return false;
+        }
+
+        ComisionesFondo comisionesFondo;
+        comisionesFondo = new ComisionesFondo(conexion, pb);
+        if(!comisionesFondo.generar()){
+            return false;
+        }
+
+        
         return true;
     }
     

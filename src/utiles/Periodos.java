@@ -29,6 +29,8 @@ public class Periodos {
                 
         if(formato=="MM-YYYY")
             return mes + "-" + anno;
+        else if(formato=="MMYYYY")
+            return mes + anno;
         else if(formato=="MESANNO")
             return mesEnTexto(mes) + "-" + anno;
         else if(formato=="MES ANNO")
