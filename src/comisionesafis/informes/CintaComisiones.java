@@ -42,12 +42,11 @@ public class CintaComisiones {
     public boolean generar(){
 
         // Abrimos el fichero de comisiones
-        Periodos periodos = new Periodos(pb.getFicheroComisiones());
         String sSQL="";
         Statement stmt;
         ResultSet rsComisiones;
-        String sFactura1;
-        String sFactura2;
+        ResultSet rsBanco;
+        String cuenta;
         
         // Generamos la sentencia de Selección de Datos
         try {
@@ -76,7 +75,7 @@ public class CintaComisiones {
             Titulo.setAlignment(Element.ALIGN_CENTER);
             Titulo.add("CINTA COMISIONES");
 
-            float[] anchuras = {1f,1f,3f,4f,1f,1f};
+            float[] anchuras = {1f,1.5f,3f,4f,1f,1.5f};
             PdfPTable table = new PdfPTable(anchuras);
             table.setWidthPercentage(100);
             table.setSpacingBefore(15f);
@@ -113,7 +112,21 @@ public class CintaComisiones {
             
             while (rsComisiones.next()) {
                    
-                // Generamos los párrafos
+                // Buscamos la Cuenta Bancaria
+                sSQL =  "SELECT * ";
+                sSQL += "  FROM Agentes";
+                sSQL += " WHERE CodAgente='" +  rsComisiones.getString("CodAgente") + "'";
+                stmt = conexion.createStatement();
+                rsBanco = stmt.executeQuery(sSQL); 
+                if(!rsBanco.next()){
+                    cuenta = "                    ";
+                } else {
+                    cuenta  =  rsBanco.getString("Banco");
+                    cuenta +=  rsBanco.getString("Sucursal");
+                    cuenta +=  rsBanco.getString("DC");
+                    cuenta +=  rsBanco.getString("Cuenta");
+                }
+                
                 // Datos del agente
                 celda = new PdfPCell(new Phrase(rsComisiones.getString("CodAgente"),font));
                 celda.setBorder(Rectangle.NO_BORDER);
@@ -125,7 +138,7 @@ public class CintaComisiones {
                 celda.setHorizontalAlignment(Element.ALIGN_RIGHT);
                 table.addCell(celda);
 
-                celda = new PdfPCell(new Phrase("12345678901234567890",font));
+                celda = new PdfPCell(new Phrase(cuenta,font));
                 celda.setBorder(Rectangle.NO_BORDER);
                 celda.setHorizontalAlignment(Element.ALIGN_CENTER);
                 table.addCell(celda);

@@ -8,8 +8,11 @@ package comisionesafis.informes;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -19,6 +22,7 @@ import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import utiles.Numeros;
 import utiles.Periodos;
 
 /**
@@ -132,34 +136,67 @@ public class FacturasComisionesAgentes {
                 pFactura2= new Paragraph(sFactura2);
 
                 // Datos Económicos
-                PdfPTable table = new PdfPTable(2);                
-
+                float[] anchuras = {5f,2f};
+                PdfPTable table = new PdfPTable(anchuras);
                 table.getDefaultCell().setBorder(0);
+                
+                // Tipo de letra para la tabla
+                Font font = new Font(Font.FontFamily.COURIER, 11, Font.NORMAL);
 
-                PdfPCell celda1 = new PdfPCell();
-                celda1.addElement(new Chunk(Double.toString(rsComisiones.getDouble("TotalComisiones"))));
-                //celda1.getPhrase().add(Double.toString(rsRecibos.getDouble("SumaComision")));
-                celda1.setHorizontalAlignment(Element.ALIGN_RIGHT);
-                celda1.setBorder(0);
+                PdfPCell celda = new PdfPCell();
+              
+                celda = new PdfPCell(new Phrase("Comisiones pagadas",font));
+                celda.setBorder(Rectangle.NO_BORDER);
+                celda.setHorizontalAlignment(Element.ALIGN_LEFT);
+                table.addCell(celda);
 
-                table.addCell("Comisiones pagadas");
-                table.addCell(celda1);
+                celda = new PdfPCell(new Phrase(Double.toString(rsComisiones.getDouble("TotalComisiones")) + " €",font));
+                celda.setBorder(Rectangle.NO_BORDER);
+                celda.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                table.addCell(celda);
 
-                table.addCell("Otros conceptos");
-                table.setHorizontalAlignment(Element.ALIGN_LEFT);
-                table.addCell("");                    
-
-                table.addCell("Retención (" + Double.toString(rsComisiones.getDouble("RetencionPorcentaje")) + "%)");
+                celda = new PdfPCell(new Phrase("Otros conceptos",font));
+                celda.setBorder(Rectangle.NO_BORDER);
+                celda.setHorizontalAlignment(Element.ALIGN_LEFT);
+                table.addCell(celda);
+                
+                celda = new PdfPCell(new Phrase(" ",font));
+                celda.setBorder(Rectangle.NO_BORDER);
+                celda.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                table.addCell(celda);
+                
+                celda = new PdfPCell(new Phrase("Retención (" + Double.toString(rsComisiones.getDouble("RetencionPorcentaje")) + "%)",font));
+                celda.setBorder(Rectangle.NO_BORDER);
+                celda.setHorizontalAlignment(Element.ALIGN_LEFT);
+                table.addCell(celda);
+                
                 Double dblRetencion = rsComisiones.getDouble("TotalComisiones") * (rsComisiones.getDouble("RetencionPorcentaje")/100); 
-                table.addCell(Double.toString(dblRetencion));
+                celda = new PdfPCell(new Phrase(Numeros.formateaDosDecimales(dblRetencion)  + " €",font));
+                celda.setBorder(Rectangle.NO_BORDER);
+                celda.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                table.addCell(celda);
 
-                table.addCell("Conceptos no sujetos");
-                table.addCell("");
+                celda = new PdfPCell(new Phrase("Conceptos no sujetos",font));
+                celda.setBorder(Rectangle.NO_BORDER);
+                celda.setHorizontalAlignment(Element.ALIGN_LEFT);
+                table.addCell(celda);
+                
+                celda = new PdfPCell(new Phrase(" ",font));
+                celda.setBorder(Rectangle.NO_BORDER);
+                celda.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                table.addCell(celda);
 
-                table.addCell("Total a pagar");
+                celda = new PdfPCell(new Phrase("Total a pagar",font));
+                celda.setBorder(Rectangle.NO_BORDER);
+                celda.setHorizontalAlignment(Element.ALIGN_LEFT);
+                table.addCell(celda);
+
                 Double dblTotalPagar = rsComisiones.getDouble("TotalComisiones") - dblRetencion;
-                table.addCell(Double.toString(dblTotalPagar));
-
+                celda = new PdfPCell(new Phrase(Numeros.formateaDosDecimales(dblTotalPagar) + " €",font));
+                celda.setBorder(Rectangle.NO_BORDER);
+                celda.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                table.addCell(celda);
+ 
                 // Literal: Operación exenta de IVA
                 Paragraph pColetilla = new Paragraph();
                 pColetilla.add("Operación exenta de IVA");
@@ -168,19 +205,27 @@ public class FacturasComisionesAgentes {
                 for(int i=0; i<5; i++)
                     documento.add(pAgente[i]);
 
+                documento.add(new Paragraph(" "));
                 documento.add(separador);
 
                 for(int i=0; i<5; i++)
                     documento.add(pPelayo[i]);
+                
+                documento.add(new Paragraph(" "));
 
                 documento.add(pFecha);
+                documento.add(new Paragraph(" "));
+                
                 documento.add(pFactura1);
                 documento.add(separador);
                 documento.add(pFactura2);
 
-                // Agregamos la tabla al documento            
+                // Agregamos la tabla al documento    
+                documento.add(new Paragraph(" "));
                 documento.add(table);
 
+                documento.add(new Paragraph(" "));
+                documento.add(new Paragraph(" "));
                 documento.add(pColetilla);
                 documento.newPage();
             }
