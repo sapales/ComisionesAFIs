@@ -49,11 +49,11 @@ public class ComisionesAFIs {
           System.exit(1);    
         
         System.out.println("Conectando con BBDD...");
-        // Abrimos la base de datos (conexión)
+        // Abrimos la base de datos (conexiÃ³n)
         if(!comisionesAFIs.conectarBBDD())
             System.exit(1);            
         
-        // Pendiente de rediseño
+        // Pendiente de rediseÃ±o
         // Cargamos el fichero de agentes
 //        System.out.println("Cargando Fichero de Agentes...");
 //        if(!comisionesAFIs.cargaFicheroAgentes())
@@ -82,14 +82,14 @@ public class ComisionesAFIs {
     }
     
     /**
-     * init(). Método principal de la clase
+     * init(). MÃ©todo principal de la clase
      * @param args 
      */
     private boolean init(String args[]){
         
         pb = new ParametrosBean();
         
-        // Comprobamos si recibimos 0 ó 3 parámetros 
+        // Comprobamos si recibimos 0 Ã³ 3 parÃ¡metros 
         if(args.length==0){
             if (!leemosProperties(pb)){
                 return false;
@@ -103,7 +103,7 @@ public class ComisionesAFIs {
         else{
             return false;
         }
-        // Añadimos los directorios de Datos y Backup que cuelgan del raiz de la aplicación
+        // AÃ±adimos los directorios de Datos y Backup que cuelgan del raiz de la aplicaciÃ³n
         pb.setDirDatos(DIR_DATOS);
         if(!existeDirectorio(pb.getDirDatos()))
             return false;
@@ -217,7 +217,7 @@ public class ComisionesAFIs {
         }
     }
     
-    // Abre la conexión la BBDD de SQLite
+    // Abre la conexiÃ³n la BBDD de SQLite
     private boolean conectarBBDD(){
         
         try{
@@ -263,24 +263,28 @@ public class ComisionesAFIs {
             
     private boolean generaInformes(){
 
+        System.out.println("Generando Facturas Comisiones Agentes...");
         FacturasComisionesAgentes facturasComisionesAgentes;
         facturasComisionesAgentes = new FacturasComisionesAgentes(conexion, pb);
         if(!facturasComisionesAgentes.generar()){
             return false;
         }
 
+        System.out.println("Generando Cinta Comisiones...");
         CintaComisiones cintaComisiones;
         cintaComisiones = new CintaComisiones(conexion, pb);
         if(!cintaComisiones.generar()){
             return false;
         }
 
+        System.out.println("Generando Liquidación Comisiones...");
         LiquidacionComisiones liquidacionComisiones;
         liquidacionComisiones = new LiquidacionComisiones(conexion, pb);
         if(!liquidacionComisiones.generar()){
             return false;
         }
 
+        System.out.println("Generando Comisiones Fondos...");
         ComisionesFondo comisionesFondo;
         comisionesFondo = new ComisionesFondo(conexion, pb);
         if(!comisionesFondo.generar()){

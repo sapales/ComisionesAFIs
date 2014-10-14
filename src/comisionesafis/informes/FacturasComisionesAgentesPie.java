@@ -23,7 +23,7 @@ public class FacturasComisionesAgentesPie extends PdfPageEventHelper {
     public void onEndPage(PdfWriter writer, Document document) {
         
         Font font = new Font(Font.FontFamily.COURIER, 8, Font.NORMAL);
-        ColumnText.showTextAligned(writer.getDirectContent(), Element.ALIGN_LEFT, new Phrase("FacturasAgentes",font), 100 , 80,0);
+        ColumnText.showTextAligned(writer.getDirectContent(), Element.ALIGN_LEFT, new Phrase("FacturasAgentes",font), 100 ,80,0);
     }
     
 }

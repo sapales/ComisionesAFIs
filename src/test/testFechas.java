@@ -16,7 +16,9 @@ public class testFechas {
     public static void main(String args[]){
         
         Fechas.fechaFichero();
+        System.out.println(Fechas.fechaVencimiento("20141025"));
         
     }
     
 }
+

@@ -36,4 +36,19 @@ public class Fechas {
         
     }
     
+    // Recibe la fecha en formato YYYYMMDD y la devuelve como DD/MM/YYYY
+    public static String fechaVencimiento(String fecha){
+        
+        String dia;
+        String mes;
+        String anno;
+        
+        dia  = fecha.substring(6,8);
+        mes  = fecha.substring(4,6);
+        anno = fecha.substring(0,4);
+        
+        return dia + "/" + mes + "/" + anno;
+        
+    }
+    
 }

@@ -7,6 +7,7 @@ package comisionesafis.informes;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.ColumnText;
 import com.itextpdf.text.pdf.PdfPageEventHelper;
@@ -20,8 +21,8 @@ public class LiquidacionComisionesPie extends PdfPageEventHelper{
     
     @Override
     public void onEndPage(PdfWriter writer, Document document) {
-        //Rectangle rect = writer.getBoxSize("art");
-        ColumnText.showTextAligned(writer.getDirectContent(), Element.ALIGN_LEFT, new Phrase("Ejemplar para el mediador"), 100 , 130,0);
+        Font font = new Font(Font.FontFamily.COURIER, 8, Font.NORMAL);
+        ColumnText.showTextAligned(writer.getDirectContent(), Element.ALIGN_LEFT, new Phrase("Ejemplar para el mediador",font), 60 , 20,0);
     }
     
 }
