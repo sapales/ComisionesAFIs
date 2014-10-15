@@ -49,11 +49,11 @@ public class ComisionesAFIs {
           System.exit(1);    
         
         System.out.println("Conectando con BBDD...");
-        // Abrimos la base de datos (conexiÃ³n)
+        // Abrimos la base de datos (conexión)
         if(!comisionesAFIs.conectarBBDD())
             System.exit(1);            
         
-        // Pendiente de rediseÃ±o
+        // Pendiente de rediseño
         // Cargamos el fichero de agentes
 //        System.out.println("Cargando Fichero de Agentes...");
 //        if(!comisionesAFIs.cargaFicheroAgentes())
@@ -82,14 +82,14 @@ public class ComisionesAFIs {
     }
     
     /**
-     * init(). MÃ©todo principal de la clase
+     * init(). Método principal de la clase
      * @param args 
      */
     private boolean init(String args[]){
         
         pb = new ParametrosBean();
         
-        // Comprobamos si recibimos 0 Ã³ 3 parÃ¡metros 
+        // Comprobamos si recibimos 0 o 3 parÃ¡metros 
         if(args.length==0){
             if (!leemosProperties(pb)){
                 return false;
@@ -103,7 +103,7 @@ public class ComisionesAFIs {
         else{
             return false;
         }
-        // AÃ±adimos los directorios de Datos y Backup que cuelgan del raiz de la aplicaciÃ³n
+        // Añadimos los directorios de Datos y Backup que cuelgan del raiz de la aplicación
         pb.setDirDatos(DIR_DATOS);
         if(!existeDirectorio(pb.getDirDatos()))
             return false;
@@ -217,7 +217,7 @@ public class ComisionesAFIs {
         }
     }
     
-    // Abre la conexiÃ³n la BBDD de SQLite
+    // Abre la conexión la BBDD de SQLite
     private boolean conectarBBDD(){
         
         try{
