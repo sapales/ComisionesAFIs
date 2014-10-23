@@ -11,6 +11,8 @@ import java.sql.Statement;
 import utiles.Numeros;
 import utiles.Periodos;
 
+//TODO: Deberíamos formatear los importes con dos decimales al cargarlos en la tabla.
+
 /**
  *
  * @author Santiago
@@ -50,10 +52,11 @@ public class CargaTablaResumenComisiones {
         try {
             
             // Borramos el contenido de la tabla antes de cargarla
+
             stmt = conexion.createStatement();
             stmt.execute("DELETE FROM ResumenComisiones");
             
-            // Calculamos la suma del Importe de Comisión
+            // Calculamos la suma del Importe de ComisiÃ³n
             sSQL =  "SELECT CodAgente, SUM(ImpComision) as SumaComision ";
             sSQL += "  FROM Recibos rec";
             sSQL += " GROUP BY CodAgente";
@@ -70,7 +73,7 @@ public class CargaTablaResumenComisiones {
                 if(!rsAgentes.next()){
                     System.out.println("No hay datos del agente" + rsRecibos.getString("CodAgente"));
                 }else{
-                    // Cálculos previos
+                    // CÃ¡lculos previos
                     periodo = periodos.extraePeriodoMY("MMYYYY");
                     retencionPorcentaje=rsAgentes.getDouble("RetencionPorcentaje");
                     retencion  = Double.parseDouble(rsRecibos.getString("SumaComision")) * (retencionPorcentaje/100);
@@ -86,7 +89,7 @@ public class CargaTablaResumenComisiones {
                     sSQL += rsAgentes.getString("CodPostal") + "','";
                     sSQL += rsAgentes.getString("Poblacion") + "','";
                     sSQL += rsAgentes.getString("Provincia") + "','";
-                    sSQL += "" + "','";   // Hueco para el NIF
+                    sSQL += rsAgentes.getString("NIF") + "','";
                     sSQL += periodo + "',";
                     sSQL += retencionPorcentaje + ",";
                     sSQL += rsRecibos.getDouble("SumaComision") + ",";

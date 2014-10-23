@@ -7,7 +7,7 @@
 
 /* TODO: 
  * - Implementar el log
- * - Implementar la actualización de datos, no sólo carga
+ * - Implementar la actualizaciÃ³n de datos, no sÃ³lo carga
 */
 
 package comisionesafis;
@@ -35,7 +35,7 @@ public class CargaFicheroAgentes {
             this.pb=pb;
             this.conexion=conexion;
             
-            // TODO. Implementar la actualización de datos
+            // TODO. Implementar la actualizaciÃ³n de datos
             File fichero = new File(pb.getFicheroAgentes());
             if(!fichero.exists())
                 return true;
@@ -77,12 +77,12 @@ public class CargaFicheroAgentes {
                     }
                     // Recuperamos los datos
                     dato=linea.split(";");
-                    for(int i=0; i<11; i++){
+                    for(int i=0; i<12; i++){
                         dato[i]=dato[i].trim();
                         dato[i]=dato[i].replace("'", "''");
                     }
                     // Tratamos los datos antes de insertarlos en la BBDD
-                    dato[0]=dato[0].substring(5,10);    // Código de Agente
+                    dato[0]=dato[0].substring(5,10);    // CÃ³digo de Agente
                     retencion=Integer.parseInt(dato[6]);
 
                     sSQL =  "INSERT INTO Agentes VALUES('";
@@ -96,7 +96,8 @@ public class CargaFicheroAgentes {
                     sSQL += dato[7]  + "','";
                     sSQL += dato[8]  + "','";
                     sSQL += dato[9]  + "','";
-                    sSQL += dato[10] + "')";
+                    sSQL += dato[10] + "','";
+                    sSQL += dato[11] + "')";
                     System.out.println(sSQL);
                     stmt = conexion.createStatement();
                     stmt.executeUpdate(sSQL);

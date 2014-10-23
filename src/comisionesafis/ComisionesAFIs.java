@@ -49,24 +49,24 @@ public class ComisionesAFIs {
           System.exit(1);    
         
         System.out.println("Conectando con BBDD...");
-        // Abrimos la base de datos (conexión)
+        // Abrimos la base de datos (conexiÃ³n)
         if(!comisionesAFIs.conectarBBDD())
             System.exit(1);            
         
-        // Pendiente de rediseño
+        // Pendiente de rediseÃ±o
         // Cargamos el fichero de agentes
-//        System.out.println("Cargando Fichero de Agentes...");
-//        if(!comisionesAFIs.cargaFicheroAgentes())
-//            System.exit(1);           
-//        
-//        // Cargamos el fichero de comisiones
-//        System.out.println("Cargando Fichero de Comisiones...");
-//        if(!comisionesAFIs.cargaFicheroComisiones())
-//            System.exit(1);            
-//        
-//        System.out.println("Cargando Tabla de Resumen de Comisiones...");
-//        if(!comisionesAFIs.cargaTablaResumenComisiones())
-//            System.exit(1);
+        System.out.println("Cargando Fichero de Agentes...");
+        if(!comisionesAFIs.cargaFicheroAgentes())
+            System.exit(1);           
+        
+        // Cargamos el fichero de comisiones
+        System.out.println("Cargando Fichero de Comisiones...");
+        if(!comisionesAFIs.cargaFicheroComisiones())
+            System.exit(1);            
+        
+        System.out.println("Cargando Tabla de Resumen de Comisiones...");
+        if(!comisionesAFIs.cargaTablaResumenComisiones())
+            System.exit(1);
         
         // Generamos el informe de Facturas Comisiones Agentes
         System.out.println("Generando Informes...");
@@ -82,7 +82,7 @@ public class ComisionesAFIs {
     }
     
     /**
-     * init(). Método principal de la clase
+     * init(). MÃƒÆ’Ã‚Â©todo principal de la clase
      * @param args 
      */
     private boolean init(String args[]){
@@ -103,7 +103,7 @@ public class ComisionesAFIs {
         else{
             return false;
         }
-        // Añadimos los directorios de Datos y Backup que cuelgan del raiz de la aplicación
+        // AÃ±adimos los directorios de Datos y Backup que cuelgan del raiz de la aplicaciÃ³n
         pb.setDirDatos(DIR_DATOS);
         if(!existeDirectorio(pb.getDirDatos()))
             return false;
@@ -217,7 +217,7 @@ public class ComisionesAFIs {
         }
     }
     
-    // Abre la conexión la BBDD de SQLite
+    // Abre la conexiÃ³n la BBDD de SQLite
     private boolean conectarBBDD(){
         
         try{
@@ -277,7 +277,7 @@ public class ComisionesAFIs {
             return false;
         }
 
-        System.out.println("Generando Liquidación Comisiones...");
+        System.out.println("Generando LiquidaciÃ³n Comisiones...");
         LiquidacionComisiones liquidacionComisiones;
         liquidacionComisiones = new LiquidacionComisiones(conexion, pb);
         if(!liquidacionComisiones.generar()){

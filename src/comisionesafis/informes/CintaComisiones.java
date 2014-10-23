@@ -20,6 +20,7 @@ import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import utiles.Numeros;
 import utiles.Periodos;
 
 /**
@@ -48,7 +49,7 @@ public class CintaComisiones {
         ResultSet rsBanco;
         String cuenta;
         
-        // Generamos la sentencia de Selección de Datos
+        // Generamos la sentencia de SelecciÃ³n de Datos
         try {
 
             // Generamos el PDF
@@ -133,7 +134,7 @@ public class CintaComisiones {
                 celda.setHorizontalAlignment(Element.ALIGN_CENTER);
                 table.addCell(celda);
 
-                celda = new PdfPCell(new Phrase(rsComisiones.getString("TotalComisiones"),font));
+                celda = new PdfPCell(new Phrase(Numeros.formateaDosDecimales(Double.parseDouble(rsComisiones.getString("TotalComisiones"))),font));
                 celda.setBorder(Rectangle.NO_BORDER);
                 celda.setHorizontalAlignment(Element.ALIGN_RIGHT);
                 table.addCell(celda);
@@ -147,12 +148,12 @@ public class CintaComisiones {
                 celda.setBorder(Rectangle.NO_BORDER);
                 table.addCell(celda);
                 
-                celda = new PdfPCell(new Phrase(rsComisiones.getString("TotalRetencion"),font));
+                celda = new PdfPCell(new Phrase(Numeros.formateaDosDecimales(Double.parseDouble(rsComisiones.getString("TotalRetencion"))),font));
                 celda.setBorder(Rectangle.NO_BORDER);
                 celda.setHorizontalAlignment(Element.ALIGN_RIGHT);
                 table.addCell(celda);
 
-                celda = new PdfPCell(new Phrase(rsComisiones.getString("TotalPagar"),font));
+                celda = new PdfPCell(new Phrase(Numeros.formateaDosDecimales(Double.parseDouble(rsComisiones.getString("TotalPagar"))),font));
                 celda.setBorder(Rectangle.NO_BORDER);
                 celda.setHorizontalAlignment(Element.ALIGN_RIGHT);
                 table.addCell(celda);

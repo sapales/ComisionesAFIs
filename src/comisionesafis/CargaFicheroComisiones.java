@@ -80,21 +80,22 @@ public class CargaFicheroComisiones {
                         return false;
                     }
                     // Recuperamos los datos
-                    dato[0]=linea.substring(0,20);      // Número de Póliza
-                    dato[1]=linea.substring(20,40);     // Número de Recibo
-                    dato[2]=linea.substring(40,48);     // Código del agente
+                    dato[0]=linea.substring(0,20);      // NÃºmero de PÃ³liza
+                    dato[1]=linea.substring(20,40);     // NÃºmero de Recibo
+                    dato[2]=linea.substring(40,48);     // CÃ³digo del agente
                     dato[3]=linea.substring(48,56);     // Fecha
-                    dato[4]=linea.substring(56,68);     // Importe Comisión
-                    dato[5]=linea.substring(68,74);     // Cod.Garantía
-                    dato[6]=linea.substring(74,94);     // Descripción
+                    dato[4]=linea.substring(56,68);     // Importe ComisiÃ³n
+                    dato[5]=linea.substring(68,74);     // Cod.GarantÃ­a
+                    dato[6]=linea.substring(74,94);     // DescripciÃ³n
                     dato[7]=linea.substring(94,106);    // Importe
-                    dato[8]=linea.substring(828,829);   // Operación de comisión
+                    dato[8]=linea.substring(828,829);   // OperaciÃ³n de comisiÃ³n
                     System.out.println(linea);
                     // Tratamos los datos antes de insertarlos en la BBDD
                     dato[0]=dato[0].trim();
                     dato[1]=dato[1].trim();
                     dato[2]=dato[2].substring(3,8);
                     impComision=Double.parseDouble(Numeros.eliminaCerosPorIzquierda(dato[4]));
+                    impComision=impComision/100;
                     //dato[5]=dato[5];
                     //dato[6]=dato[6];
                     importe=Double.parseDouble(Numeros.eliminaCerosPorIzquierda(dato[7]))/100;

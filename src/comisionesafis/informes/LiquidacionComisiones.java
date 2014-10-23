@@ -58,7 +58,7 @@ public class LiquidacionComisiones {
         PdfPTable table;
         Double dblTotal=0.0;
         
-        // Generamos la sentencia de SelecciÃ³n de Datos
+        // Generamos la sentencia de SelecciÃƒÆ’Ã‚Â³n de Datos
         try {
 
             // Generamos el PDF
@@ -75,7 +75,7 @@ public class LiquidacionComisiones {
             // Abrimos el Documento
             documento.open();
             
-            // SELECT para extraer todos los códigos de los agentes con Recibos
+            // SELECT para extraer todos los cÃ³digos de los agentes con Recibos
             sSQL =  "SELECT DISTINCT (CodAgente) AS Agente ";
             sSQL += "  FROM ResumenComisiones";
             sSQL += " ORDER BY CodAgente";
@@ -84,76 +84,81 @@ public class LiquidacionComisiones {
                         
             while (rsAgentes.next()) {
                    
-                printCabecera1(documento);
-                printCabeceraPelayo(documento);
-                printCabecera2(documento,rsAgentes);
-            
-                // SELECT para extraer todos los Recibos de un agente
-                sSQL =  "SELECT * ";
-                sSQL += "  FROM Recibos";
-                sSQL += " WHERE CodAgente = '" + rsAgentes.getString("Agente") + "'"; 
-                stmt = conexion.createStatement();
-                rsRecibos = stmt.executeQuery(sSQL);
+                if(sumaComisiones(rsAgentes.getString("Agente"))!=0){
+                    paginaNum=0;
+                    printCabecera1(documento);
+                    printCabeceraPelayo(documento);
+                    printCabecera2(documento,rsAgentes);
+
+                    // SELECT para extraer todos los Recibos de un agente
+                    sSQL =  "SELECT * ";
+                    sSQL += "  FROM Recibos";
+                    sSQL += " WHERE CodAgente = '" + rsAgentes.getString("Agente") + "'"; 
+                    stmt = conexion.createStatement();
+                    rsRecibos = stmt.executeQuery(sSQL);
                 
-                // Creamos la tabla formateada
-                table=creaTabla();
-                
-//                if(rsAgentes.getString("Agente").equals("12355")){
-//                    System.out.println("Hola");
+//                if(rsAgentes.getString("Agente").equals("10803")){
+//                    System.out.println("");
 //                }
                 
-                cabeceraColumnas=true;
-                filasPorPagina=42;
-                paginaNum=0;
-                dblTotal=0.0;
-                while(rsRecibos.next()){
-                    if(fila>=filasPorPagina){
-                        // Salto de página
-                        // Imprimimos el contenido de la tabla
+                    // Creamos la tabla formateada
+                    table=creaTabla();
+
+                    cabeceraColumnas=true;
+                    filasPorPagina=42;
+                    dblTotal=0.0;
+                    while(rsRecibos.next()){
+                        if(Double.parseDouble(rsRecibos.getString("ImpComision"))!=0)
+                        {
+                            if(fila>=filasPorPagina){
+                                // Salto de pÃ¡gina
+                                // Imprimimos el contenido de la tabla
+                                documento.add(table);
+                                documento.newPage();
+                                table=creaTabla();
+                                saltoDePagina(documento, table, rsAgentes);
+                                fila=1;
+                                filasPorPagina=47;
+                            }else if(cabeceraColumnas){
+                                // Primera pÃ¡gina
+                                printCabeceraColumnas(table);
+                                cabeceraColumnas=false;
+                                fila=1;
+                            }
+                            Font font = new Font(Font.FontFamily.COURIER, 8, Font.NORMAL);
+                            celda = new PdfPCell(new Phrase(rsRecibos.getString("NPoliza"),font));
+                            celda.setBorder(Rectangle.NO_BORDER);
+                            celda.setHorizontalAlignment(Element.ALIGN_LEFT);
+                            table.addCell(celda);
+                            celda = new PdfPCell(new Phrase(Fechas.fechaVencimiento(rsRecibos.getString("Fecha")),font));
+                            celda.setBorder(Rectangle.NO_BORDER);
+                            celda.setHorizontalAlignment(Element.ALIGN_LEFT);
+                            table.addCell(celda);
+                            celda = new PdfPCell(new Phrase(fondoRecibo(rsRecibos.getString("Descripcion")),font));
+                            celda.setBorder(Rectangle.NO_BORDER);
+                            celda.setHorizontalAlignment(Element.ALIGN_LEFT);
+                            table.addCell(celda);
+                            celda = new PdfPCell(new Phrase(rsRecibos.getString("Importe"),font));
+                            celda.setBorder(Rectangle.NO_BORDER);
+                            celda.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                            table.addCell(celda);
+                            celda = new PdfPCell(new Phrase(Numeros.formateaDosDecimales(Double.parseDouble(rsRecibos.getString("ImpComision"))),font));
+                            celda.setBorder(Rectangle.NO_BORDER);
+                            celda.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                            table.addCell(celda);
+                            dblTotal+=Double.parseDouble(rsRecibos.getString("ImpComision"));
+                            fila++;
+                        }
+                    }
+                    if(fila>=filasPorPagina-5){
                         documento.add(table);
                         documento.newPage();
                         table=creaTabla();
-                        saltoDePagina(documento, table, rsAgentes);
-                        fila=1;
-                        filasPorPagina=47;
-                    }else if(cabeceraColumnas){
-                        // Primera página
-                        printCabeceraColumnas(table);
-                        cabeceraColumnas=false;
-                        fila=1;
                     }
-                    Font font = new Font(Font.FontFamily.COURIER, 8, Font.NORMAL);
-                    celda = new PdfPCell(new Phrase(rsRecibos.getString("NPoliza"),font));
-                    celda.setBorder(Rectangle.NO_BORDER);
-                    celda.setHorizontalAlignment(Element.ALIGN_LEFT);
-                    table.addCell(celda);
-                    celda = new PdfPCell(new Phrase(Fechas.fechaVencimiento(rsRecibos.getString("Fecha")),font));
-                    celda.setBorder(Rectangle.NO_BORDER);
-                    celda.setHorizontalAlignment(Element.ALIGN_LEFT);
-                    table.addCell(celda);
-                    celda = new PdfPCell(new Phrase(fondoRecibo(rsRecibos.getString("Descripcion")),font));
-                    celda.setBorder(Rectangle.NO_BORDER);
-                    celda.setHorizontalAlignment(Element.ALIGN_LEFT);
-                    table.addCell(celda);
-                    celda = new PdfPCell(new Phrase(rsRecibos.getString("Importe"),font));
-                    celda.setBorder(Rectangle.NO_BORDER);
-                    celda.setHorizontalAlignment(Element.ALIGN_RIGHT);
-                    table.addCell(celda);
-                    celda = new PdfPCell(new Phrase(rsRecibos.getString("ImpComision"),font));
-                    celda.setBorder(Rectangle.NO_BORDER);
-                    celda.setHorizontalAlignment(Element.ALIGN_RIGHT);
-                    table.addCell(celda);
-                    dblTotal+=Double.parseDouble(rsRecibos.getString("ImpComision"));
-                    fila++;
-                }
-                if(fila>=filasPorPagina-5){
+                    printResumenContable(table, dblTotal, rsAgentes.getString("Agente"));
                     documento.add(table);
                     documento.newPage();
-                    table=creaTabla();
                 }
-                printResumenContable(table, dblTotal, rsAgentes.getString("Agente"));
-                documento.add(table);
-                documento.newPage();
             }
             documento.close();
             return true;
@@ -169,8 +174,8 @@ public class LiquidacionComisiones {
         String patron = "dd/MM/yyyy";
         SimpleDateFormat formato = new SimpleDateFormat(patron);
         String fecha= (formato.format(new Date()));
-        
-        
+        Fechas objFecha = new Fechas();
+       
         try{
             paginaNum++;
             Font fontFecha = new Font(Font.FontFamily.COURIER, 7, Font.NORMAL);
@@ -179,7 +184,7 @@ public class LiquidacionComisiones {
             documento.add(parrafo);
             
             Font fontPaginaNum = new Font(Font.FontFamily.COURIER, 7, Font.NORMAL);
-            parrafo=new Paragraph("Página " + Integer.toString(paginaNum) , fontPaginaNum);
+            parrafo=new Paragraph("PÃ¡gina " + Integer.toString(paginaNum) , fontPaginaNum);
             parrafo.setAlignment(Element.ALIGN_RIGHT);
             documento.add(parrafo);
             
@@ -188,8 +193,9 @@ public class LiquidacionComisiones {
             parrafo.setAlignment(Element.ALIGN_RIGHT);
             documento.add(parrafo);
             
+            Periodos fechaLiquidacion = new Periodos(pb.getFicheroComisiones());
             Font fontTitulo = new Font(Font.FontFamily.COURIER, 12, Font.NORMAL);
-            parrafo=new Paragraph("LIQUIDACIÓN DE COMISIONES: Septiembre 2014" , fontTitulo);
+            parrafo=new Paragraph("LIQUIDACIÃ“N DE COMISIONES: " + fechaLiquidacion.extraeMesTxtAnno(), fontTitulo);
             parrafo.setAlignment(Element.ALIGN_CENTER);
             documento.add(parrafo);
 
@@ -232,11 +238,28 @@ public class LiquidacionComisiones {
     }
     
     private void printCabecera2(Document documento, ResultSet rsAgentes){
-        
+
+        String sSQL ="";
+        Statement stmt;
+        ResultSet rsDatosAgente;
         
         try{
+            
+            // SELECT para extraer todos los cÃ³digos de los agentes con Recibos
+            sSQL =  "SELECT * ";
+            sSQL += "  FROM Agentes";
+            sSQL += " WHERE CodAgente='" + rsAgentes.getString("Agente") + "'";
+            stmt = conexion.createStatement();
+            rsDatosAgente = stmt.executeQuery(sSQL);
+                        
+            if(!rsDatosAgente.next()){
+                // Este error no deberÃ­a darse
+                System.out.println("Error: No hay datos para el agente " + rsAgentes.getString("Agente") );
+                return;
+            }
+            
             // Generamos la cabecera
-            Font fuenteCabecera = new Font(Font.FontFamily.COURIER, 8, Font.NORMAL);
+            //Font fuenteCabecera = new Font(Font.FontFamily.COURIER, 8, Font.NORMAL);
             float[] anchuras = {3f,1f,5f};
             PdfPTable table1 = new PdfPTable(anchuras);
 
@@ -246,7 +269,7 @@ public class LiquidacionComisiones {
             PdfPCell celda = new PdfPCell();
 
             // Sucursal/DelegaciÃ³n
-            celda = new PdfPCell(new Phrase("SUCURSAL/DELEGACION",font));
+            celda = new PdfPCell(new Phrase("SUCURSAL/DELEGACIÃ“N",font));
             celda.setBorder(Rectangle.NO_BORDER);
             celda.setHorizontalAlignment(Element.ALIGN_LEFT);
             table1.addCell(celda);
@@ -261,21 +284,22 @@ public class LiquidacionComisiones {
             celda.setHorizontalAlignment(Element.ALIGN_LEFT);
             table1.addCell(celda);
 
-            // InspecciÃ³n
-            celda = new PdfPCell(new Phrase("INSPECCIÓN",font));
-            celda.setBorder(Rectangle.NO_BORDER);
-            celda.setHorizontalAlignment(Element.ALIGN_LEFT);
-            table1.addCell(celda);
-
-            celda = new PdfPCell(new Phrase("000001",font));
-            celda.setBorder(Rectangle.NO_BORDER);
-            celda.setHorizontalAlignment(Element.ALIGN_LEFT);
-            table1.addCell(celda);
-
-            celda = new PdfPCell(new Phrase("ACUERDO DE DISTRIBUCIÓN",font));
-            celda.setBorder(Rectangle.NO_BORDER);
-            celda.setHorizontalAlignment(Element.ALIGN_LEFT);
-            table1.addCell(celda);
+// No tenemos estos datos. Me pide Fernando que los quite
+//            // InspecciÃ³n
+//            celda = new PdfPCell(new Phrase("INSPECCIÃ“N",font));
+//            celda.setBorder(Rectangle.NO_BORDER);
+//            celda.setHorizontalAlignment(Element.ALIGN_LEFT);
+//            table1.addCell(celda);
+//
+//            celda = new PdfPCell(new Phrase("000001",font));
+//            celda.setBorder(Rectangle.NO_BORDER);
+//            celda.setHorizontalAlignment(Element.ALIGN_LEFT);
+//            table1.addCell(celda);
+//
+//            celda = new PdfPCell(new Phrase("ACUERDO DE DISTRIBUCIÃ“N",font));
+//            celda.setBorder(Rectangle.NO_BORDER);
+//            celda.setHorizontalAlignment(Element.ALIGN_LEFT);
+//            table1.addCell(celda);
 
             // Agente
             celda = new PdfPCell(new Phrase("AGENTE",font));
@@ -283,12 +307,12 @@ public class LiquidacionComisiones {
             celda.setHorizontalAlignment(Element.ALIGN_LEFT);
             table1.addCell(celda);
 
-            celda = new PdfPCell(new Phrase(rsAgentes.getString("Agente"),font));
+            celda = new PdfPCell(new Phrase(rsDatosAgente.getString("CodAgente"),font));
             celda.setBorder(Rectangle.NO_BORDER);
             celda.setHorizontalAlignment(Element.ALIGN_LEFT);
             table1.addCell(celda);
 
-            celda = new PdfPCell(new Phrase("MUTUA PELAYO",font));
+            celda = new PdfPCell(new Phrase(rsDatosAgente.getString("Nombre"),font));
             celda.setBorder(Rectangle.NO_BORDER);
             celda.setHorizontalAlignment(Element.ALIGN_LEFT);
             table1.addCell(celda);
@@ -307,7 +331,7 @@ public class LiquidacionComisiones {
         PdfPCell celda;
         
         Font font = new Font(Font.FontFamily.COURIER, 8, Font.NORMAL);
-        celda = new PdfPCell(new Phrase("NUMERO DE PÓLIZA",font));
+        celda = new PdfPCell(new Phrase("NUMERO DE PÃ“LIZA",font));
         celda.setBorder(Rectangle.TOP + Rectangle.BOTTOM + Rectangle.LEFT);
         celda.setHorizontalAlignment(Element.ALIGN_CENTER);
         table.addCell(celda);
@@ -319,7 +343,7 @@ public class LiquidacionComisiones {
         celda.setBorder(Rectangle.TOP + Rectangle.BOTTOM);
         celda.setHorizontalAlignment(Element.ALIGN_CENTER);
         table.addCell(celda);
-        celda = new PdfPCell(new Phrase("BASE COMISIÓN",font));
+        celda = new PdfPCell(new Phrase("BASE COMISIÃ“N",font));
         celda.setBorder(Rectangle.TOP + Rectangle.BOTTOM);
         celda.setHorizontalAlignment(Element.ALIGN_CENTER);
         table.addCell(celda);
@@ -371,7 +395,7 @@ public class LiquidacionComisiones {
         String cuenta;
         
         try{
-            // SELECT para extraer todos los códigos de los agentes con Recibos
+            // SELECT para extraer todos los cÃƒÂ³digos de los agentes con Recibos
             sSQL =  "SELECT * ";
             sSQL += "  FROM Agentes";
             sSQL += " WHERE CodAgente ='" + codAgente + "'";
@@ -428,7 +452,7 @@ public class LiquidacionComisiones {
             tabla.addCell(celda);
 
             font = new Font(Font.FontFamily.COURIER, 8, Font.NORMAL);
-            celda = new PdfPCell(new Phrase("LÍQUIDO ",font));
+            celda = new PdfPCell(new Phrase("LÃQUIDO ",font));
             celda.setBorder(Rectangle.BOTTOM);
             celda.setHorizontalAlignment(Element.ALIGN_LEFT);
             tabla.addCell(celda);
@@ -447,7 +471,7 @@ public class LiquidacionComisiones {
             cuenta+=rsAgente.getString("Cuenta") + " ";
             
             font = new Font(Font.FontFamily.COURIER, 8, Font.NORMAL);
-            celda = new PdfPCell(new Phrase("CTA nº " + cuenta,font));
+            celda = new PdfPCell(new Phrase("CTA nÂº " + cuenta,font));
             celda.setColspan(5);
             celda.setBorder(Rectangle.NO_BORDER);
             tabla.addCell(celda);
@@ -498,6 +522,27 @@ public class LiquidacionComisiones {
         else
             return "";
         
+    }
+    
+    private double sumaComisiones(String codAgente){
+
+        String sSQL="";
+        Statement stmt;
+        ResultSet rsComisiones;
+
+        try{
+            // SELECT para extraer todos los Recibos de un agente
+            sSQL =  "SELECT SUM(TotalComisiones) AS Total ";
+            sSQL += "  FROM ResumenComisiones";
+            sSQL += " WHERE CodAgente = '" + codAgente + "'"; 
+            stmt = conexion.createStatement();
+            rsComisiones = stmt.executeQuery(sSQL);
+            rsComisiones.next();
+            return rsComisiones.getDouble("Total");
+        }catch(Exception e){
+            System.out.println("Error " + e.getMessage());
+            return 0;
+        }
     }
 
 }

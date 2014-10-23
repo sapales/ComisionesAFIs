@@ -40,6 +40,12 @@ public class Periodos {
         
     }
     
+    public String extraeMesTxtAnno(){
+        
+        return mesEnTexto(mes) + " de " + anno;
+        
+    }
+    
     public String extraeFechaLarga(){
         
         return "31 de " + mesEnTexto(mes) + " de " + anno;
