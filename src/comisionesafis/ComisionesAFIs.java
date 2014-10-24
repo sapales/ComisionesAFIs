@@ -49,15 +49,15 @@ public class ComisionesAFIs {
           System.exit(1);    
         
         System.out.println("Conectando con BBDD...");
-        // Abrimos la base de datos (conexiÃ³n)
+        // Abrimos la base de datos (conexión)
         if(!comisionesAFIs.conectarBBDD())
             System.exit(1);            
         
-        // Pendiente de rediseÃ±o
+        // Pendiente de rediseño
         // Cargamos el fichero de agentes
-        System.out.println("Cargando Fichero de Agentes...");
-        if(!comisionesAFIs.cargaFicheroAgentes())
-            System.exit(1);           
+//        System.out.println("Cargando Fichero de Agentes...");
+//        if(!comisionesAFIs.cargaFicheroAgentes())
+//            System.exit(1);           
         
         // Cargamos el fichero de comisiones
         System.out.println("Cargando Fichero de Comisiones...");
